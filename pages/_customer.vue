@@ -27,7 +27,11 @@
     </v-row>
     <v-row>
       <v-col>
-        <form>
+        <v-form
+          ref="form"
+          v-model="formValid"
+          lazy-validation
+        >
           <v-text-field
             v-model="user.name"
             :rules="nameRules"
@@ -112,6 +116,7 @@
           <v-text-field
             v-model="user.address"
             :counter="200"
+            :rules="addressRules"
             class="mx-4"
             label="Address:"
           />
@@ -124,7 +129,7 @@
           >
             submit
           </v-btn>
-        </form>
+        </v-form>
 
       </v-col>
     </v-row>
@@ -145,6 +150,7 @@ export default {
       },
       datePicker: false,
       snackbar: false,
+      formValid: false,
       snackbarTimeout: 2000,
       snackbarText: '',
       snackbarColor: 'green',
@@ -155,6 +161,9 @@ export default {
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      addressRules: [
+        v => (v && v.length <= 200) || 'Address must be less than 200 characters',
       ],
 
     }
@@ -174,19 +183,25 @@ export default {
     },
     async submit() {
       const post = { ...this.user }
-      post.birthday = this.$moment(post.birthday).toISOString()
-      try{
-        await this.$axios.post(`/api/customers/update`, post)
-        this.snackbarColor = 'green'
-        this.snackbarText = 'Customer updated'
-        this.snackbar = true
 
-      } catch(e){
-        this.snackbarColor = 'red'
-        this.snackbarText = `Error updating customer: ${e.message}`
+      if (!this.$refs.form.validate()) {
+        this.snackbarColor = 'error'
+        this.snackbarText = 'Please check required fields'
         this.snackbar = true
+      } else {
+        post.birthday = this.$moment(post.birthday).toISOString()
+        try{
+          await this.$axios.post(`/api/customers/update`, post)
+          this.snackbarColor = 'green'
+          this.snackbarText = 'Customer updated'
+          this.snackbar = true
+
+        } catch(e){
+          this.snackbarColor = 'red'
+          this.snackbarText = `Error updating customer: ${e.message}`
+          this.snackbar = true
+        }
       }
-
     },
     getMinAge() {
       return this.$moment().subtract(60, 'years').format('YYYY-MM-DD')

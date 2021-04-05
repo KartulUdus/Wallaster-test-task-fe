@@ -116,7 +116,7 @@
           />
           <v-text-field
             v-model="user.address"
-            :rules="nameRules"
+            :rules="addressRules"
             class="mx-4"
             :counter="200"
             label="Address:"
@@ -161,6 +161,9 @@ export default {
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      addressRules: [
+        v => (v && v.length <= 200) || 'Address must be less than 200 characters',
       ],
 
     }
