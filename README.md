@@ -1,4 +1,6 @@
-# fe
+## Requirements:
+* [Node.js](https://nodejs.org/en/download/) (LTS version reccommended)
+* [BE](https://github.com/KartulUdus/wallaster-be) (running on localhost:8080)
 
 ## Build Setup
 
@@ -13,8 +15,9 @@ $ npm run dev
 $ npm run build
 $ npm run start
 
-# generate static project
-$ npm run generate
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+## Run tests
+`npm test`
+TBD
+
